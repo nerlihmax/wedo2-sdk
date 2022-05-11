@@ -1,17 +1,8 @@
-import * as R from 'ramda';
+import { addNotifyListener, connect, setupNotifications } from './ble/connection';
 
-import { connect } from './connection';
-import { notify } from './characterictic';
-import { profile } from './gatt';
-
-const bootstrap = async () => {
-  const connection = await connect();
-
-  await notify(
-    connection,
-    profile.ioService.uuid,
-    profile.ioService.characteristics.valueFormat
-  );
+const bootstrap = () => {
+  const connection = connect().then(setupNotifications)
+  .then(c => addNotifyListener(c.gatt.));
 };
 
 bootstrap();
