@@ -5,14 +5,13 @@ import {
   Connect,
   SetupNotifications,
   AddNotifyListener,
-} from 'src/ble/connection';
-import { UUID } from 'src/ble/gatt';
-import { addNotificationCallback, subscribe } from 'src/ble/characterictic';
-import { Wedo2GattProfile, wedo2gattProfile } from 'src/wedo2/gatt';
+} from '../ble/connection';
+import { UUID } from '../ble/gatt';
+import { addNotificationCallback, subscribe } from '../ble/characteristic';
+import { Wedo2GattProfile, profile } from './gatt';
 
-export type Wedo2ConnectionError = {
-  reason: 'connection';
-};
+type NotificableCharacteristic =
+  Wedo2GattProfile['services']['commonService']['characteristics']; // Закончил тут
 
 const isWedo2 = (identity: UUID) => (ad: noble.Advertisement) =>
   ad.serviceUuids && ad.serviceUuids.findIndex(R.equals(identity)) !== -1;
@@ -25,15 +24,20 @@ export const connect: Connect<Wedo2GattProfile> = async () => {
       const { advertisement } = peripheral;
       const { localName } = advertisement;
 
-      if (isWedo2(wedo2gattProfile.commonService.uuid)(advertisement)) {
+      if (isWedo2(profile.services.commonService.uuid)(advertisement)) {
         console.info(`found wedo2 device ${localName}`);
         await peripheral.connectAsync();
         await peripheral.discoverAllServicesAndCharacteristicsAsync();
 
+        const characteristics = peripheral.services.reduce<
+          noble.Characteristic[]
+        >((acc, curr) => [...acc, ...curr.characteristics], []);
+
         resolve({
           state: 'connected',
-          gatt: wedo2gattProfile,
-          peripheral: peripheral,
+          gatt: profile,
+          peripheral,
+          characteristics,
         });
       }
     });
@@ -45,15 +49,17 @@ export const setupNotifications: SetupNotifications<Wedo2GattProfile> = async (
 ) => {
   await subscribe(
     connection,
-    connection.gatt.commonService.uuid,
     connection.gatt.commonService.characteristics.attachedIo
   );
 
   return connection;
 };
 
-export const addNotifyListener: AddNotifyListener<Wedo2GattProfile> =
-  (service, characterictic, listener) => (connection) => {
-    addNotificationCallback(connection, service, characterictic, listener);
+export const addNotificationListener: AddNotifyListener<Wedo2GattProfile> =
+  (characteristic, listener) => (connection) => {
+    addNotificationCallback(connection, characteristic, (data) => {
+      console.log(data);
+      listener();
+    });
     return connection;
   };

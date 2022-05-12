@@ -1,18 +1,19 @@
 import noble from '@abandonware/noble';
 
-import { GattProfile, UUID } from './gatt';
+import { UUID } from './gatt';
 
-export type Connection<Profile extends GattProfile> =
+export type Connection<Profile> =
   | ConnectionConnected<Profile>
-  | ConnectionDisconnected;
+  | ConnectionDisconnected<Profile>;
 
 export type ConnectionConnected<Profile> = {
   state: 'connected';
   peripheral: noble.Peripheral;
+  characteristics: noble.Characteristic[];
   gatt: Profile;
 };
 
-export type ConnectionDisconnected = {
+export type ConnectionDisconnected<Profile> = {
   state: 'disconnected';
 };
 
@@ -23,7 +24,6 @@ export type SetupNotifications<Profile> = (
 ) => Promise<ConnectionConnected<Profile>>;
 
 export type AddNotifyListener<Profile> = (
-  service: UUID,
-  characterictic: UUID,
+  characteristic: UUID,
   listener: () => void
 ) => (connection: ConnectionConnected<Profile>) => ConnectionConnected<Profile>;

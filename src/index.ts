@@ -1,8 +1,22 @@
-import { addNotifyListener, connect, setupNotifications } from './ble/connection';
+import M from 'ts-pattern';
 
-const bootstrap = () => {
-  const connection = connect().then(setupNotifications)
-  .then(c => addNotifyListener(c.gatt.));
-};
+import {
+  addNotificationListener,
+  connect,
+  setupNotifications,
+} from './wedo2/connection';
+import { profile } from './wedo2/gatt';
+
+const matchAttachedIo = () => console.log();
+
+const bootstrap = () =>
+  connect()
+    .then(setupNotifications)
+    .then(
+      addNotificationListener(
+        profile.commonService.characteristics.attachedIo,
+        () => console.log('received attachedIo')
+      )
+    );
 
 bootstrap();

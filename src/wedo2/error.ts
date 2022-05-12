@@ -1,3 +1,3 @@
-import { Wedo2ConnectionError } from 'src/wedo2/connection';
+import { Wedo2ConnectionError } from './connection';
 
 export type Wedo2Error = Wedo2ConnectionError;

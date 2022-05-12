@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/nerlihmax/wedo2-sdk#readme",
   "devDependencies": {
+    "@types/node": "^17.0.32",
     "@typescript-eslint/eslint-plugin": "^5.21.0",
     "@typescript-eslint/parser": "^5.21.0",
     "eslint": "^8.14.0",
@@ -34,6 +35,7 @@
     "@abandonware/noble": "^1.9.2-15",
     "@types/ramda": "^0.28.11",
     "fp-ts": "^2.12.0",
-    "ramda": "^0.28.0"
+    "ramda": "^0.28.0",
+    "ts-pattern": "^4.0.2"
   }
 }

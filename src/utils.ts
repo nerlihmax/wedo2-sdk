@@ -1,1 +1,1 @@
-import * as R from 'ramda';
+export type Values<T> = T[keyof T];
