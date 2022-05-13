@@ -22,8 +22,8 @@ export type Wedo2GattProfile = GattProfile<{
     characteristics: {
       sensorValue: '000015601212efde1523785feabcd123';
       valueFormat: '000015611212efde1523785feabcd123';
-      inputCommand: '000015601212efde1523785feabcd123';
-      outputCommand: '000015601212efde1523785feabcd123';
+      inputCommand: '000015631212efde1523785feabcd123';
+      outputCommand: '000015651212efde1523785feabcd123';
     };
   };
   commonService: {
@@ -57,8 +57,8 @@ export const profile: Wedo2GattProfile = {
       characteristics: {
         sensorValue: '000015601212efde1523785feabcd123',
         valueFormat: '000015611212efde1523785feabcd123',
-        inputCommand: '000015601212efde1523785feabcd123',
-        outputCommand: '000015601212efde1523785feabcd123',
+        inputCommand: '000015631212efde1523785feabcd123',
+        outputCommand: '000015651212efde1523785feabcd123',
       },
     },
     commonService: {

@@ -1,7 +1,6 @@
 import noble from '@abandonware/noble';
 
-import { UUID } from './gatt';
-
+// warp in either
 export type Connection<Profile> =
   | ConnectionConnected<Profile>
   | ConnectionDisconnected<Profile>;
@@ -10,7 +9,7 @@ export type ConnectionConnected<Profile> = {
   state: 'connected';
   peripheral: noble.Peripheral;
   characteristics: noble.Characteristic[];
-  gatt: Profile;
+  _gatt: Profile;
 };
 
 export type ConnectionDisconnected<Profile> = {
@@ -23,7 +22,17 @@ export type SetupNotifications<Profile> = (
   connection: ConnectionConnected<Profile>
 ) => Promise<ConnectionConnected<Profile>>;
 
-export type AddNotifyListener<Profile> = (
-  characteristic: UUID,
-  listener: () => void
+export type AddNotifyListener<
+  Profile,
+  Notificable extends {
+    readonly [P in keyof Notificable]: Notificable[P];
+  }
+> = (
+  characteristic: keyof Notificable,
+  // TODO: infer type from я хз ваще как тут довести тип
+  listener: <T>(event: T) => void
 ) => (connection: ConnectionConnected<Profile>) => ConnectionConnected<Profile>;
+
+export type SendInputCommand<Profile> = () => Promise<
+  ConnectionConnected<Profile>
+>;

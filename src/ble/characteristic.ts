@@ -6,19 +6,14 @@ import { UUID } from './gatt';
 
 const findByUuid = (uuid: UUID) => R.propEq('uuid', uuid);
 
-export const findCharacteristic = (
+const findCharacteristic = (
   connection: ConnectionConnected<unknown>,
-  uuid: UUID
+  char: UUID
 ): noble.Characteristic => {
-  // const service = peripheral.services.find((s) =>
-  //   s.characteristics.find(findByUuid(uuid))
-  // );
-
-  // const characteristic = service?.characteristics.find(findByUuid(uuid));
-  const characteristic = connection.characteristics.find(findByUuid(uuid));
+  const characteristic = connection.characteristics.find(findByUuid(char));
 
   if (!characteristic) {
-    throw new Error(`куда-то пропала gatt-характеристика ${uuid}`);
+    throw new Error(`куда-то пропала gatt-характеристика ${char}`);
   }
 
   return characteristic;
@@ -26,18 +21,35 @@ export const findCharacteristic = (
 
 type Subscribe = (
   connection: ConnectionConnected<unknown>,
-  uuid: UUID
+  char: UUID
 ) => Promise<void>;
-export const subscribe: Subscribe = async (connection, characteristicUuid) => {
-  const chars = [characteristicUuid];
+export const subscribe: Subscribe = async (connection, char) => {
+  const chars = [char];
   await Promise.all(
     chars.map((char) => findCharacteristic(connection, char).notifyAsync(true))
   );
 };
 
+type Write = (
+  connection: ConnectionConnected<unknown>,
+  char: UUID,
+  payload: number[],
+  withResponse?: boolean
+) => Promise<void>;
+export const write: Write = async (
+  connection,
+  char,
+  payload,
+  withResponse = false
+) =>
+  findCharacteristic(connection, char).writeAsync(
+    Buffer.from(payload),
+    withResponse
+  );
+
 type SetNotificationCallback = (
   connection: ConnectionConnected<unknown>,
-  uuid: UUID,
+  char: UUID,
   callback: (buffer: Buffer) => void
 ) => void;
 export const addNotificationCallback: SetNotificationCallback = (
