@@ -1,13 +1,14 @@
 import * as R from 'ramda';
 import noble from '@abandonware/noble';
+import log from 'loglevel';
 
-import { ConnectionConnected } from './connection';
+import { Wedo2ConnectionConnected } from './connection/types';
 import { UUID } from './gatt';
 
 const findByUuid = (uuid: UUID) => R.propEq('uuid', uuid);
 
 const findCharacteristic = (
-  connection: ConnectionConnected<unknown>,
+  connection: Wedo2ConnectionConnected,
   char: UUID
 ): noble.Characteristic => {
   const characteristic = connection.characteristics.find(findByUuid(char));
@@ -20,20 +21,19 @@ const findCharacteristic = (
 };
 
 type Subscribe = (
-  connection: ConnectionConnected<unknown>,
+  connection: Wedo2ConnectionConnected,
   char: UUID
 ) => Promise<void>;
-export const subscribe: Subscribe = async (connection, char) => {
-  const chars = [char];
-  await Promise.all(
-    chars.map((char) => findCharacteristic(connection, char).notifyAsync(true))
-  );
+export const subscribe: Subscribe = (connection, char) => {
+  log.debug(`ble: подписался нотификации на ${char.slice(4, 8)}`);
+
+  return findCharacteristic(connection, char).notifyAsync(true);
 };
 
 type Write = (
-  connection: ConnectionConnected<unknown>,
+  connection: Wedo2ConnectionConnected,
   char: UUID,
-  payload: number[],
+  payload: Buffer,
   withResponse?: boolean
 ) => Promise<void>;
 export const write: Write = async (
@@ -41,19 +41,19 @@ export const write: Write = async (
   char,
   payload,
   withResponse = false
-) =>
-  findCharacteristic(connection, char).writeAsync(
-    Buffer.from(payload),
-    withResponse
-  );
+) => {
+  log.debug(`ble: отправляю команду на ${char.slice(4, 8)}`, payload);
+
+  findCharacteristic(connection, char).writeAsync(payload, withResponse);
+};
 
 type SetNotificationCallback = (
-  connection: ConnectionConnected<unknown>,
+  connection: Wedo2ConnectionConnected,
   char: UUID,
   callback: (buffer: Buffer) => void
 ) => void;
 export const addNotificationCallback: SetNotificationCallback = (
   connection,
-  characteristic,
+  char,
   callback
-) => findCharacteristic(connection, characteristic).on('data', callback);
+) => findCharacteristic(connection, char).on('data', callback);

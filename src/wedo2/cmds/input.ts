@@ -1,41 +1,60 @@
-import { ConnectionConnected } from 'src/ble/connection';
-import { Wedo2Sensor } from '../devices/sensor';
 import { match } from 'ts-pattern';
-import { profile } from '../gatt';
-import { write } from 'src/ble/characteristic';
+import log from 'loglevel';
 
-type RegisterSensor = <Profile>(
-  sensor: Wedo2Sensor
-) => (
-  connection: ConnectionConnected<Profile>
-) => Promise<ConnectionConnected<Profile>>;
+import { Wedo2ConnectionConnected } from 'src/connection/types';
+import { profile } from 'src/gatt';
+import { write } from 'src/characteristic';
+import { Wedo2Device } from '../devices';
+
 /*
+ * from rev-eng guide (in hex):
+ *  01          02            01          22       01    01 00 00 00               02    01
  * (COMMAND ID, COMMAND TYPE, CONNECT ID, TYPE ID, MODE, DELTA INTERVAL (4 BYTES), UNIT, NOTIFICATIONS ENABLED).
  */
-export const registerSensor: RegisterSensor =
-  (sensor) => async (connection) => {
-    const data = match<Wedo2Sensor, number[]>(sensor)
-      // первый байт delta ставим 1 что бы спамило
-      .with({ _tag: 'tilt' }, (s) => [
+type RegisterDevice = (
+  connection: Wedo2ConnectionConnected,
+  device: Wedo2Device
+) => Promise<Wedo2ConnectionConnected>;
+export const registerDevice: RegisterDevice = async (connection, device) => {
+  const payload = Buffer.from(
+    match(device)
+      .with({ _tag: 'tilt' }, ({ port, ioType, mode, measurement }) => [
         1,
         2,
-        s.port,
-        s.ioType,
-        s.mode,
-        1, // включить дельта кодирование
+        port,
+        ioType,
+        mode,
+        1,
         0,
         0,
         0,
-        s.measurement,
-        1, // включить нотификации
+        measurement,
+        1,
       ])
-      .exhaustive();
+      .with({ _tag: 'distance' }, ({ port, ioType, mode, measurement }) => [
+        1,
+        2,
+        port,
+        ioType,
+        mode,
+        1,
+        0,
+        0,
+        0,
+        measurement,
+        1,
+      ])
+      .exhaustive()
+  );
 
-    await write(
-      connection,
-      profile.services.ioService.characteristics.inputCommand,
-      data
-    );
+  // TODO: форматированный вывод девайсов в логи
+  log.debug('ble: регистрирую девайс');
 
-    return connection;
-  };
+  await write(
+    connection,
+    profile.services.ioService.characteristics.inputCommand,
+    payload
+  );
+
+  return connection;
+};

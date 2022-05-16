@@ -1,18 +1,23 @@
-import { Either, left, right } from 'fp-ts/lib/Either';
+import { Either, right, left } from 'fp-ts/lib/Either';
+import { Option, some, none } from 'fp-ts/lib/Option';
 import { match } from 'ts-pattern';
 
-import { Wedo2IoType, Wedo2Port } from '../devices';
+import {
+  Wedo2Device,
+  wedo2IoType,
+  Wedo2IoType,
+  wedo2MeasurementUnit,
+  Wedo2Port,
+} from '../devices';
+import { wedo2DistanceSensorMode } from '../devices/distance';
+import { wedo2TiltSensorMode } from '../devices/tilt';
 
-type Wedo2EventAttachedIoType = {
-  DETACHED: 0;
-  ATTACHED: 1;
-  ATTACHED_VIRTUAL: 2;
-};
-export const wedo2EventAttachedIoType: Wedo2EventAttachedIoType = {
+type Wedo2EventAttachedIoType = typeof wedo2EventAttachedIoType;
+export const wedo2EventAttachedIoType = {
   DETACHED: 0,
   ATTACHED: 1,
   ATTACHED_VIRTUAL: 2,
-};
+} as const;
 
 export type Wedo2EventAttachedIo =
   | Wedo2EventAttachedIoDetach
@@ -41,20 +46,46 @@ export const parseAttachedIo = (
   const value = [...data];
 
   const port = value[0];
-  const event = value[1];
+  const type = value[1];
   const ioType = value[3];
 
-  return match({ port, event })
-    .with({ event: wedo2EventAttachedIoType.DETACHED }, ({ port }) =>
-      right({ type: wedo2EventAttachedIoType.DETACHED, port })
+  return match({ port, type, ioType })
+    .with({ type: wedo2EventAttachedIoType.DETACHED }, ({ type, port }) =>
+      right({ type, port })
     )
-    .with({ event: wedo2EventAttachedIoType.ATTACHED }, ({ port }) =>
-      right({ type: wedo2EventAttachedIoType.ATTACHED, port, ioType })
+    .with(
+      { type: wedo2EventAttachedIoType.ATTACHED },
+      ({ type, port, ioType }) => right({ type, port, ioType })
     )
-    .with({ event: wedo2EventAttachedIoType.ATTACHED_VIRTUAL }, ({ port }) =>
-      right({ type: wedo2EventAttachedIoType.ATTACHED_VIRTUAL, port })
+    .with(
+      { type: wedo2EventAttachedIoType.ATTACHED_VIRTUAL },
+      ({ type, port }) => right({ type, port })
     )
     .otherwise(() =>
-      left(new Error('неизвестный event-type в eventAttachedIO'))
+      left(new Error('ble: [attachedIo]: неизвестный event type'))
     );
 };
+
+export const getDeviceFromEvent = (
+  event: Wedo2EventAttachedIoAttach
+): Option<Wedo2Device> =>
+  match(event)
+    .with({ ioType: wedo2IoType.EXTERNAL_TILT }, ({ ioType, port }) =>
+      some({
+        _tag: 'tilt',
+        mode: wedo2TiltSensorMode.TILT,
+        measurement: wedo2MeasurementUnit.SI,
+        ioType,
+        port,
+      } as const)
+    )
+    .with({ ioType: wedo2IoType.DISTANCE }, ({ ioType, port }) =>
+      some({
+        _tag: 'distance',
+        mode: wedo2DistanceSensorMode.DETECT,
+        measurement: wedo2MeasurementUnit.SI,
+        ioType,
+        port,
+      } as const)
+    )
+    .otherwise(() => none);
