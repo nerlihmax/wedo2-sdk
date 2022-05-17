@@ -1,4 +1,5 @@
 import noble from '@abandonware/noble';
+import { Wedo2EventAttachedIoDetach } from 'src/wedo2/events/attachedIo';
 
 import { Wedo2Device } from '../wedo2/devices';
 import { Wedo2EventSensorValue } from '../wedo2/events/sensorValue';
@@ -20,9 +21,13 @@ export type Wedo2ConnectionDisconnected = {
 
 export type Connect = () => Promise<Wedo2ConnectionConnected>;
 
-export type SetAttachedIoListener = (
-  listener: (device: Wedo2Device) => void
-) => (
+export type AddPortAttachmentsListener = ({
+  attach,
+  detach,
+}: {
+  attach: (device: Wedo2Device) => void;
+  detach: (device: Wedo2EventAttachedIoDetach) => void;
+}) => (
   Wedo2connection: Wedo2ConnectionConnected
 ) => Promise<Wedo2ConnectionConnected>;
 

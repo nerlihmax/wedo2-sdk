@@ -6,7 +6,7 @@ import log from 'loglevel';
 
 import {
   Connect,
-  SetAttachedIoListener,
+  AddPortAttachmentsListener,
   Wedo2ConnectionConnected,
 } from './types';
 import { profile, UUID } from '../gatt';
@@ -60,8 +60,9 @@ export const connect: Connect = async () => {
   });
 };
 
-export const setAttachedIoListener: SetAttachedIoListener =
-  (listener) => async (connection) => {
+export const addPortAttachmentsListener: AddPortAttachmentsListener =
+  ({ attach, detach }) =>
+  async (connection) => {
     addNotificationCallback(
       connection,
       profile.services.commonService.characteristics.attachedIo,
@@ -76,6 +77,7 @@ export const setAttachedIoListener: SetAttachedIoListener =
 
         if (event.right.type === wedo2EventAttachedIoType.DETACHED) {
           log.info(`от порта ${event.right.port} отключено устройство`);
+          detach(event.right);
         } else if (
           event.right.type === wedo2EventAttachedIoType.ATTACHED_VIRTUAL
         ) {
@@ -93,7 +95,7 @@ export const setAttachedIoListener: SetAttachedIoListener =
             device.value
           );
           await registerDevice(connection, device.value);
-          listener(device.value);
+          attach(device.value);
         }
       }
     );
