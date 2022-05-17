@@ -44,11 +44,24 @@ export const registerDevice: RegisterDevice = async (connection, device) => {
         measurement,
         1,
       ])
+      .with({ _tag: 'led' }, ({ port, ioType }) => [
+        1,
+        2,
+        port,
+        ioType,
+        0,
+        1,
+        0,
+        0,
+        0,
+        2,
+        1,
+      ])
       .exhaustive()
   );
 
   // TODO: форматированный вывод девайсов в логи
-  log.debug('ble: регистрирую девайс');
+  log.debug(`ble: регистрирую девайс ${device._tag} на порту ${device.port}`);
 
   await write(
     connection,

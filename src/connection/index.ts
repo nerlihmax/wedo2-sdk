@@ -11,12 +11,13 @@ import {
 } from './types';
 import { profile, UUID } from '../gatt';
 import { addNotificationCallback, subscribe } from '../characteristic';
-import { registerDevice } from '../wedo2/cmds/input';
+import { registerDevice } from '../wedo2/cmds/register';
 import {
   getDeviceFromEvent,
   parseAttachedIo,
   wedo2EventAttachedIoType,
 } from '../wedo2/events/attachedIo';
+import { wedo2Led } from '../wedo2/devices/led';
 
 const isWedo2 = (identity: UUID) => (ad: noble.Advertisement) =>
   ad.serviceUuids && ad.serviceUuids.findIndex(R.equals(identity)) !== -1;
@@ -40,6 +41,7 @@ export const connect: Connect = async () => {
 
         const connection: Wedo2ConnectionConnected = {
           state: 'connected',
+          deviceName: localName,
           peripheral,
           characteristics,
         };
@@ -53,6 +55,8 @@ export const connect: Connect = async () => {
           connection,
           profile.services.ioService.characteristics.sensorValue
         );
+
+        await registerDevice(connection, wedo2Led);
 
         resolve(connection);
       }

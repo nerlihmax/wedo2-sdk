@@ -1,13 +1,17 @@
 import { Values } from '../../utils';
 import { Wedo2DistanceSensor } from './distance';
+import { Wedo2Led } from './led';
 import { Wedo2TiltSensor } from './tilt';
 
-export type Wedo2Device = Wedo2DistanceSensor | Wedo2TiltSensor;
+export type Wedo2Device = Wedo2DistanceSensor | Wedo2TiltSensor | Wedo2Led;
 
-export type Wedo2BaseSensor = {
+export type Wedo2BaseDevice = {
   port: Wedo2Port;
-  measurement: Wedo2MeasurementUnit;
   ioType: Wedo2IoType;
+};
+
+export type Wedo2BaseSensor = Wedo2BaseDevice & {
+  measurement: Wedo2MeasurementUnit;
 };
 
 export type Wedo2MeasurementUnit = Values<typeof wedo2MeasurementUnit>;

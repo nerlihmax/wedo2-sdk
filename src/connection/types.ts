@@ -1,6 +1,6 @@
 import noble from '@abandonware/noble';
-import { Wedo2EventAttachedIoDetach } from 'src/wedo2/events/attachedIo';
 
+import { Wedo2EventAttachedIoDetach } from 'src/wedo2/events/attachedIo';
 import { Wedo2Device } from '../wedo2/devices';
 import { Wedo2EventSensorValue } from '../wedo2/events/sensorValue';
 
@@ -10,6 +10,7 @@ export type Wedo2Connection =
   | Wedo2ConnectionDisconnected;
 
 export type Wedo2ConnectionConnected = {
+  deviceName: string;
   state: 'connected';
   peripheral: noble.Peripheral;
   characteristics: noble.Characteristic[];
