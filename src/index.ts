@@ -5,5 +5,7 @@ import { connect, setAttachedIoListener } from './connection';
 const bootstrap = () =>
   connect().then(setAttachedIoListener((a) => console.log(a)));
 
-log.setDefaultLevel('debug');
+log.setDefaultLevel(
+  (process.env.NODE_ENV ?? 'production') === 'production' ? 'silent' : 'debug'
+);
 bootstrap();

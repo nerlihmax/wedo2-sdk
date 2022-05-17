@@ -5,7 +5,7 @@
   "main": "src/index.ts",
   "scripts": {
     "build": "tsc",
-    "dev": "./node_modules/nodemon/bin/nodemon.js -e ts --exec \"npm run build && clear && node dist/index.js\""
+    "dev": "NODE_ENV=development ./node_modules/nodemon/bin/nodemon.js -e ts --exec \"npm run build && clear && node dist/index.js\""
   },
   "repository": {
     "type": "git",
