@@ -1,9 +1,9 @@
 import { match } from 'ts-pattern';
 import log from 'loglevel';
 
-import { Wedo2ConnectionConnected } from 'src/connection/types';
-import { profile } from 'src/gatt';
-import { write } from 'src/characteristic';
+import { Wedo2ConnectionConnected } from '../../connection/types';
+import { profile } from '../../gatt';
+import { write } from '../../characteristic';
 import { Wedo2Device } from '../devices';
 
 /*

@@ -1,4 +1,4 @@
-import { Values } from 'src/utils';
+import { Values } from '../../utils';
 import { Wedo2BaseSensor } from './index';
 
 export type Wedo2DistanceSensorMode = typeof wedo2DistanceSensorMode;

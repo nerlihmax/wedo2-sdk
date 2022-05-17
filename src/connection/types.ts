@@ -1,7 +1,7 @@
 import noble from '@abandonware/noble';
 
-import { Wedo2Device } from 'src/wedo2/devices';
-import { Wedo2EventSensorValue } from 'src/wedo2/events/sensorValue';
+import { Wedo2Device } from '../wedo2/devices';
+import { Wedo2EventSensorValue } from '../wedo2/events/sensorValue';
 
 // warp in either
 export type Wedo2Connection =

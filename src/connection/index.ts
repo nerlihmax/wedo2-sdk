@@ -9,14 +9,14 @@ import {
   SetAttachedIoListener,
   Wedo2ConnectionConnected,
 } from './types';
-import { profile, UUID } from 'src/gatt';
-import { addNotificationCallback, subscribe } from 'src/characteristic';
-import { registerDevice } from 'src/wedo2/cmds/input';
+import { profile, UUID } from '../gatt';
+import { addNotificationCallback, subscribe } from '../characteristic';
+import { registerDevice } from '../wedo2/cmds/input';
 import {
   getDeviceFromEvent,
   parseAttachedIo,
   wedo2EventAttachedIoType,
-} from 'src/wedo2/events/attachedIo';
+} from '../wedo2/events/attachedIo';
 
 const isWedo2 = (identity: UUID) => (ad: noble.Advertisement) =>
   ad.serviceUuids && ad.serviceUuids.findIndex(R.equals(identity)) !== -1;

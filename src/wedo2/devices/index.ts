@@ -1,4 +1,4 @@
-import { Values } from 'src/utils';
+import { Values } from '../../utils';
 import { Wedo2DistanceSensor } from './distance';
 import { Wedo2TiltSensor } from './tilt';
 
