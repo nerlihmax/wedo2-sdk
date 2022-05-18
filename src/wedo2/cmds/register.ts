@@ -4,7 +4,7 @@ import log from 'loglevel';
 import { Wedo2ConnectionConnected } from '../../connection/types';
 import { profile } from '../../gatt';
 import { write } from '../../characteristic';
-import { Wedo2Device } from '../devices';
+import { Wedo2Device, Wedo2NoDevice } from '../devices';
 
 /*
  * from rev-eng guide (in hex):
@@ -13,12 +13,12 @@ import { Wedo2Device } from '../devices';
  */
 type RegisterDevice = (
   connection: Wedo2ConnectionConnected,
-  device: Wedo2Device
-) => Promise<Wedo2ConnectionConnected>;
+  device: Exclude<Wedo2Device, Wedo2NoDevice>
+) => Promise<void>;
 export const registerDevice: RegisterDevice = async (connection, device) => {
   const payload = Buffer.from(
     match(device)
-      .with({ _tag: 'tilt' }, ({ port, ioType, mode, measurement }) => [
+      .with({ tag: 'tilt' }, ({ port, ioType, mode, measurement }) => [
         1,
         2,
         port,
@@ -31,7 +31,7 @@ export const registerDevice: RegisterDevice = async (connection, device) => {
         measurement,
         1,
       ])
-      .with({ _tag: 'distance' }, ({ port, ioType, mode, measurement }) => [
+      .with({ tag: 'distance' }, ({ port, ioType, mode, measurement }) => [
         1,
         2,
         port,
@@ -44,7 +44,7 @@ export const registerDevice: RegisterDevice = async (connection, device) => {
         measurement,
         1,
       ])
-      .with({ _tag: 'led' }, ({ port, ioType }) => [
+      .with({ tag: 'led' }, ({ port, ioType }) => [
         1,
         2,
         port,
@@ -61,13 +61,11 @@ export const registerDevice: RegisterDevice = async (connection, device) => {
   );
 
   // TODO: форматированный вывод девайсов в логи
-  log.debug(`ble: регистрирую девайс ${device._tag} на порту ${device.port}`);
+  log.debug(`ble: регистрирую девайс ${device.tag} на порту ${device.port}`);
 
   await write(
     connection,
     profile.services.ioService.characteristics.inputCommand,
     payload
   );
-
-  return connection;
 };

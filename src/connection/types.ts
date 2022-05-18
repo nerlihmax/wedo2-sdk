@@ -1,10 +1,14 @@
 import noble from '@abandonware/noble';
 
-import { Wedo2EventAttachedIoDetach } from 'src/wedo2/events/attachedIo';
-import { Wedo2Device } from '../wedo2/devices';
+import { Wedo2EventAttachedIoDetach } from '../wedo2/events/attachedIo';
+import {
+  Wedo2NoDevice,
+  Wedo2PhysicalDevice,
+  Wedo2PhysicalPort,
+} from '../wedo2/devices';
 import { Wedo2EventSensorValue } from '../wedo2/events/sensorValue';
 
-// warp in either
+// TODO: warp in either
 export type Wedo2Connection =
   | Wedo2ConnectionConnected
   | Wedo2ConnectionDisconnected;
@@ -14,6 +18,7 @@ export type Wedo2ConnectionConnected = {
   state: 'connected';
   peripheral: noble.Peripheral;
   characteristics: noble.Characteristic[];
+  ports: Record<Wedo2PhysicalPort, Wedo2PhysicalDevice | Wedo2NoDevice>;
 };
 
 export type Wedo2ConnectionDisconnected = {
@@ -22,22 +27,14 @@ export type Wedo2ConnectionDisconnected = {
 
 export type Connect = () => Promise<Wedo2ConnectionConnected>;
 
-export type AddPortAttachmentsListener = ({
+export type SetAttachIoListener = ({
   attach,
   detach,
 }: {
-  attach: (device: Wedo2Device) => void;
+  attach: (device: Wedo2PhysicalDevice) => void;
   detach: (device: Wedo2EventAttachedIoDetach) => void;
-}) => (
-  Wedo2connection: Wedo2ConnectionConnected
-) => Promise<Wedo2ConnectionConnected>;
+}) => (Wedo2connection: Wedo2ConnectionConnected) => Wedo2ConnectionConnected;
 
 export type SetSensorValueListener = (
-  listener: (event: Wedo2EventSensorValue) => void
-) => (
-  Wedo2connection: Wedo2ConnectionConnected
-) => Promise<Wedo2ConnectionConnected>;
-
-export type SendInputCommand = () => (
-  Wedo2connection: Wedo2ConnectionConnected
-) => Promise<Wedo2ConnectionConnected>;
+  listener: (value: Wedo2EventSensorValue, device: Wedo2PhysicalDevice) => void
+) => (Wedo2connection: Wedo2ConnectionConnected) => Wedo2ConnectionConnected;

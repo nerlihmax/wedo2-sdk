@@ -1,5 +1,5 @@
 import { Values } from '../../utils';
-import { Wedo2BaseDevice } from './index';
+import { Wedo2BaseVirtualDevice } from './index';
 
 export type Wedo2LedColor = Values<typeof wedo2LedColor>;
 
@@ -17,14 +17,14 @@ export const wedo2LedColor = {
   WHITE: 10,
 } as const;
 
-export type Wedo2Led = Wedo2BaseDevice & {
-  _tag: 'led';
+export type Wedo2Led = Wedo2BaseVirtualDevice & {
+  tag: 'led';
   port: 6;
   ioType: 0x17;
 };
 
 export const wedo2Led: Wedo2Led = {
-  _tag: 'led',
+  tag: 'led',
   port: 6,
   ioType: 0x17,
 };

@@ -3,14 +3,30 @@ import { Wedo2DistanceSensor } from './distance';
 import { Wedo2Led } from './led';
 import { Wedo2TiltSensor } from './tilt';
 
-export type Wedo2Device = Wedo2DistanceSensor | Wedo2TiltSensor | Wedo2Led;
+export type Wedo2Device =
+  | Wedo2PhysicalDevice
+  | Wedo2VirtualDevice
+  | Wedo2NoDevice;
 
-export type Wedo2BaseDevice = {
+export type Wedo2PhysicalDevice = Wedo2PhysicalSensor;
+
+export type Wedo2PhysicalSensor = Wedo2DistanceSensor | Wedo2TiltSensor;
+
+export type Wedo2VirtualDevice = Wedo2Led;
+
+export type Wedo2NoDevice = { tag: 'noDevice'; port: Wedo2Port };
+
+export type Wedo2BaseVirtualDevice = {
   port: Wedo2Port;
   ioType: Wedo2IoType;
 };
 
-export type Wedo2BaseSensor = Wedo2BaseDevice & {
+export type Wedo2BasePhysicalDevice = {
+  port: Wedo2PhysicalPort;
+  ioType: Wedo2IoType;
+};
+
+export type Wedo2BaseSensor = {
   measurement: Wedo2MeasurementUnit;
 };
 
@@ -25,8 +41,8 @@ export type Wedo2Port = Wedo2PhysicalPort | Wedo2VirtualPort;
 
 export type Wedo2PhysicalPort = Values<typeof wedo2PhysicalPort>;
 export const wedo2PhysicalPort = {
-  PORT1: 0,
-  PORT2: 1,
+  PORT1: 1,
+  PORT2: 2,
 } as const;
 
 export type Wedo2IoType = number | Values<typeof wedo2IoType>;

@@ -1,5 +1,5 @@
 import { Either, right, left } from 'fp-ts/lib/Either';
-import { Option, some, none } from 'fp-ts/lib/Option';
+import { Option, some, none } from 'fp-ts/Option';
 import { match } from 'ts-pattern';
 
 import {
@@ -7,6 +7,9 @@ import {
   wedo2IoType,
   Wedo2IoType,
   wedo2MeasurementUnit,
+  Wedo2PhysicalDevice,
+  Wedo2PhysicalPort,
+  wedo2PhysicalPort,
   Wedo2Port,
 } from '../devices';
 import { wedo2DistanceSensorMode } from '../devices/distance';
@@ -40,6 +43,19 @@ export type Wedo2EventAttachedIoAttachedVirtual = {
   port: Wedo2Port;
 };
 
+export function isDevicePhysical(
+  device: Wedo2Device
+): device is Wedo2PhysicalDevice {
+  return (
+    device.port === wedo2PhysicalPort.PORT1 ||
+    device.port === wedo2PhysicalPort.PORT2
+  );
+}
+
+export function isPortPhysical(port: Wedo2Port): port is Wedo2PhysicalPort {
+  return port === wedo2PhysicalPort.PORT1 || port === wedo2PhysicalPort.PORT2;
+}
+
 export const parseAttachedIo = (
   data: Buffer
 ): Either<Error, Wedo2EventAttachedIo> => {
@@ -66,25 +82,26 @@ export const parseAttachedIo = (
     );
 };
 
-export const getDeviceFromEvent = (
-  event: Wedo2EventAttachedIoAttach
-): Option<Wedo2Device> =>
-  match(event)
-    .with({ ioType: wedo2IoType.EXTERNAL_TILT }, ({ ioType, port }) =>
+export const getDevice = (
+  ioType: Wedo2IoType,
+  port: Wedo2PhysicalPort
+): Option<Wedo2PhysicalDevice> =>
+  match(ioType)
+    .with(wedo2IoType.EXTERNAL_TILT, () =>
       some({
-        _tag: 'tilt',
+        tag: 'tilt',
         mode: wedo2TiltSensorMode.TILT,
         measurement: wedo2MeasurementUnit.SI,
-        ioType,
+        ioType: wedo2IoType.EXTERNAL_TILT,
         port,
       } as const)
     )
-    .with({ ioType: wedo2IoType.DISTANCE }, ({ ioType, port }) =>
+    .with(wedo2IoType.DISTANCE, () =>
       some({
-        _tag: 'distance',
+        tag: 'distance',
         mode: wedo2DistanceSensorMode.DETECT,
         measurement: wedo2MeasurementUnit.SI,
-        ioType,
+        ioType: wedo2IoType.DISTANCE,
         port,
       } as const)
     )
