@@ -33,7 +33,6 @@ const matchTiltDirection = (
     .with([0xa0, 0x40], () => right(wedo2TiltSensorDirection.RIGHT))
     .with([0xe0, 0x40], () => right(wedo2TiltSensorDirection.LEFT))
     .with([0x10, 0x41], () => right(wedo2TiltSensorDirection.FORWARD))
-
     .otherwise(() =>
       left(new Error('tiltSensor: получено неизвестное направление наклона'))
     );
@@ -67,12 +66,11 @@ export const parseSensorValue = (
 
       return right({ distance, device });
     })
-    .with({ tag: 'noDevice' }, () =>
+    .otherwise((device) =>
       left(
         new Error(
-          'ble: [sensorValue]: пришло значение датчика, который не добавлен в conn.ports'
+          `ble: [sensorValue]: пришло значение не с сенсора, а с ${device.tag}, скипаем`
         )
       )
-    )
-    .exhaustive();
+    );
 };

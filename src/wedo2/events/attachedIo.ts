@@ -82,11 +82,18 @@ export const parseAttachedIo = (
     );
 };
 
-export const configureDevice = (
+export const getDevice = (
   ioType: Wedo2IoType,
   port: Wedo2PhysicalPort
 ): Option<Wedo2PhysicalDevice> =>
   match(ioType)
+    .with(wedo2IoType.MOTOR, () =>
+      some({
+        tag: 'motor',
+        ioType: wedo2IoType.MOTOR,
+        port,
+      } as const)
+    )
     .with(wedo2IoType.EXTERNAL_TILT, () =>
       some({
         tag: 'tilt',

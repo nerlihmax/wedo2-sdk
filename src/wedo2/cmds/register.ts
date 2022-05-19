@@ -5,6 +5,7 @@ import { Wedo2ConnectionConnected } from '../../connection/types';
 import { profile } from '../../gatt';
 import { write } from '../../characteristic';
 import { Wedo2Device, Wedo2NoDevice } from '../devices';
+import { Wedo2Motor } from '../devices/motor';
 
 /*
  * from rev-eng guide (in hex):
@@ -13,7 +14,7 @@ import { Wedo2Device, Wedo2NoDevice } from '../devices';
  */
 type RegisterDevice = (
   connection: Wedo2ConnectionConnected,
-  device: Exclude<Wedo2Device, Wedo2NoDevice>
+  device: Exclude<Wedo2Device, Wedo2NoDevice | Wedo2Motor>
 ) => Promise<void>;
 export const registerDevice: RegisterDevice = async (connection, device) => {
   const payload = Buffer.from(

@@ -1,6 +1,7 @@
 import { Values } from '../../utils';
 import { Wedo2DistanceSensor } from './distance';
 import { Wedo2Led } from './led';
+import { Wedo2Motor } from './motor';
 import { Wedo2TiltSensor } from './tilt';
 
 export type Wedo2Device =
@@ -8,7 +9,7 @@ export type Wedo2Device =
   | Wedo2VirtualDevice
   | Wedo2NoDevice;
 
-export type Wedo2PhysicalDevice = Wedo2PhysicalSensor;
+export type Wedo2PhysicalDevice = Wedo2PhysicalSensor | Wedo2Motor;
 
 export type Wedo2PhysicalSensor = Wedo2DistanceSensor | Wedo2TiltSensor;
 
@@ -47,6 +48,7 @@ export const wedo2PhysicalPort = {
 
 export type Wedo2IoType = number | Values<typeof wedo2IoType>;
 export const wedo2IoType = {
+  MOTOR: 0x01,
   EXTERNAL_TILT: 0x22,
   DISTANCE: 0x23,
 } as const;

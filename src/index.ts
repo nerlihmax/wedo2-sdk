@@ -8,6 +8,8 @@ import {
   setSensorValueListener,
 } from './connection';
 import { setLedColor } from './wedo2/cmds/led';
+import { setMotorState } from './wedo2/cmds/motor';
+import { wedo2PhysicalPort } from './wedo2/devices';
 import { wedo2LedColor } from './wedo2/devices/led';
 import { wedo2TiltSensorDirection } from './wedo2/devices/tilt';
 
@@ -61,8 +63,15 @@ connect()
       )
     )
   )
-  .then(setLedColor(wedo2LedColor.RED))
-  .then(wait(1000))
-  .then(setLedColor(wedo2LedColor.YELLOW))
-  .then(wait(1000))
-  .then(setLedColor(wedo2LedColor.GREEN));
+  .then(wait(10000))
+  .then(
+    tap((conn) => {
+      console.log('включаю мотор');
+      console.log('порты: ', conn.ports);
+
+      const device = conn.ports[wedo2PhysicalPort.PORT1];
+      if (device.tag === 'motor') {
+        setMotorState(device, -80)(conn);
+      }
+    })
+  );

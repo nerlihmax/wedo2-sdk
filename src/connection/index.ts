@@ -15,7 +15,7 @@ import { profile, UUID } from '../gatt';
 import { addNotificationCallback, subscribe } from '../characteristic';
 import { registerDevice } from '../wedo2/cmds/register';
 import {
-  configureDevice,
+  getDevice,
   isPortPhysical,
   parseAttachedIo,
   wedo2EventAttachedIoType,
@@ -24,11 +24,13 @@ import { wedo2Led } from '../wedo2/devices/led';
 import {
   Wedo2Device,
   Wedo2NoDevice,
+  Wedo2PhysicalDevice,
   Wedo2PhysicalPort,
   wedo2PhysicalPort,
 } from '../wedo2/devices';
 import { parseSensorValue } from '../wedo2/events/sensorValue';
 import { wedo2TiltSensorDirection } from '../wedo2/devices/tilt';
+import { Wedo2Motor } from 'src/wedo2/devices/motor';
 
 const isWedo2 = (identity: UUID) => (ad: noble.Advertisement) =>
   ad.serviceUuids && ad.serviceUuids.findIndex(R.equals(identity)) !== -1;
@@ -40,6 +42,10 @@ const getNoDevice = (port: Wedo2PhysicalPort): Wedo2NoDevice => ({
 
 function isNoDevice(device: Wedo2Device): device is Wedo2NoDevice {
   return device.tag === 'noDevice';
+}
+
+function isMotor(device: Wedo2PhysicalDevice): device is Wedo2Motor {
+  return device.tag === 'motor';
 }
 
 export const connect: Connect = async () => {
@@ -116,7 +122,7 @@ export const setAttachIoListener: SetAttachIoListener = ({ attach, detach }) =>
         } else if (event.right.type === wedo2EventAttachedIoType.ATTACHED) {
           if (!isPortPhysical(event.right.port)) return;
 
-          const device = configureDevice(event.right.ioType, event.right.port);
+          const device = getDevice(event.right.ioType, event.right.port);
           if (isNone(device)) {
             log.error('ble: [attachedIo]: подключено неизвестное устройство');
             return;
@@ -129,7 +135,10 @@ export const setAttachIoListener: SetAttachIoListener = ({ attach, detach }) =>
           );
 
           connection.ports[device.value.port] = device.value;
-          await registerDevice(connection, device.value);
+
+          if (!isMotor(device.value))
+            await registerDevice(connection, device.value);
+
           attach(device.value);
         } else if (
           event.right.type === wedo2EventAttachedIoType.ATTACHED_VIRTUAL
