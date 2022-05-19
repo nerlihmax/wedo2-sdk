@@ -1,12 +1,15 @@
 {
   "name": "wedo2-sdk",
-  "version": "0.0.1",
+  "version": "0.1.0-rc",
   "description": "sdk for wedo2",
-  "main": "src/index.ts",
+  "main": "lib/cjs/index.js",
+  "module": "lib/esm/index.js",
+  "files": [
+    "lib/"
+  ],
   "scripts": {
-    "build": "tsc",
-    "dev": "NODE_ENV=development ./node_modules/nodemon/bin/nodemon.js -e ts --exec \"npm run build && clear && node dist/index.js\"",
-    "start": "npm run build && NODE_ENV=production node dist/index.js"
+    "build": "tsc -p tsconfig.cjs.json && tsc -p tsconfig.esm.json",
+    "prepublishOnly": "npm run build"
   },
   "repository": {
     "type": "git",

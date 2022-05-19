@@ -1,8 +1,9 @@
 {
   "include": ["src/**/*.ts"],
-  "exclude": ["node_modules"],
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "outDir": "dist"
+    "outDir": "lib/esm",
+    "declaration": true,
+    "module": "es2020"
   }
 }
