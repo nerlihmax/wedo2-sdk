@@ -39,21 +39,26 @@ connect()
     })
   )
   .then(
-    setSensorValueListener((value, device) =>
-      match(device.tag)
-        .with('tilt', () =>
-          log.info(
-            `[sensorValue]: датчик наклона наклонен ${match(value.direction)
-              .with(wedo2TiltSensorDirection.BACKWARD, () => 'назад')
-              .with(wedo2TiltSensorDirection.FORWARD, () => 'вперед')
-              .with(wedo2TiltSensorDirection.LEFT, () => 'влево')
-              .with(wedo2TiltSensorDirection.RIGHT, () => 'направо')
-              .with(wedo2TiltSensorDirection.NETURAL, () => 'нейтрально')
-              .exhaustive()}`
+    setSensorValueListener((value) =>
+      console.log(
+        `\nuserspace: ${`${match(value)
+          .with(
+            { device: { tag: 'tilt' } },
+            (value) =>
+              `датчик наклона наклонен ${match(value.direction)
+                .with(wedo2TiltSensorDirection.BACKWARD, () => 'назад')
+                .with(wedo2TiltSensorDirection.FORWARD, () => 'вперед')
+                .with(wedo2TiltSensorDirection.LEFT, () => 'влево')
+                .with(wedo2TiltSensorDirection.RIGHT, () => 'направо')
+                .with(wedo2TiltSensorDirection.NETURAL, () => 'нейтрально')
+                .exhaustive()}`
           )
-        )
-        .with('distance', () => log.info('у меня лапки на дистанс сенсор'))
-        .exhaustive()
+          .with(
+            { device: { tag: 'distance' } },
+            (value) => `датчик растояния отдален на ${value.distance}`
+          )
+          .exhaustive()}`}\n`
+      )
     )
   )
   .then(setLedColor(wedo2LedColor.RED))

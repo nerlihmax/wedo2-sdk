@@ -36,5 +36,5 @@ export type SetAttachIoListener = ({
 }) => (Wedo2connection: Wedo2ConnectionConnected) => Wedo2ConnectionConnected;
 
 export type SetSensorValueListener = (
-  listener: (value: Wedo2EventSensorValue, device: Wedo2PhysicalDevice) => void
+  listener: (value: Wedo2EventSensorValue) => void
 ) => (Wedo2connection: Wedo2ConnectionConnected) => Wedo2ConnectionConnected;

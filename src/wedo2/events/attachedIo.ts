@@ -82,7 +82,7 @@ export const parseAttachedIo = (
     );
 };
 
-export const getDevice = (
+export const configureDevice = (
   ioType: Wedo2IoType,
   port: Wedo2PhysicalPort
 ): Option<Wedo2PhysicalDevice> =>

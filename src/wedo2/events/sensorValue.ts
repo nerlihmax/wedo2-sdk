@@ -3,18 +3,25 @@ import { Either, right, left, isLeft } from 'fp-ts/lib/Either';
 
 import { Wedo2ConnectionConnected } from '../../connection/types';
 import {
+  Wedo2TiltSensor,
   wedo2TiltSensorDirection,
   Wedo2TiltSensorDirection,
 } from '../devices/tilt';
-import { isDevicePhysical, isPortPhysical } from './attachedIo';
-import { Wedo2PhysicalPort } from '../devices';
+import { isPortPhysical } from './attachedIo';
+import { Wedo2DistanceSensor } from '../devices/distance';
 
-export type Wedo2EventSensorValue = Wedo2TiltSensorValue;
+export type Wedo2EventSensorValue =
+  | Wedo2TiltSensorValue
+  | Wedo2DistanceSensorValue;
 
-type Wedo2EventSensorBaseValue = { port: Wedo2PhysicalPort };
-
-export type Wedo2TiltSensorValue = Wedo2EventSensorBaseValue & {
+export type Wedo2TiltSensorValue = {
+  device: Wedo2TiltSensor;
   direction: Wedo2TiltSensorDirection;
+};
+
+export type Wedo2DistanceSensorValue = {
+  device: Wedo2DistanceSensor;
+  distance: number;
 };
 
 const matchTiltDirection = (
@@ -46,15 +53,26 @@ export const parseSensorValue = (
   const device = ports[port];
 
   return match(device)
-    .with({ tag: 'tilt' }, () => {
+    .with({ tag: 'tilt' }, (device) => {
       const dir = matchTiltDirection([value[4], value[5]]);
-      return isLeft(dir) ? dir : right({ port, direction: dir.right });
+      return isLeft(dir) ? dir : right({ direction: dir.right, device });
     })
-    .otherwise(() =>
+    .with({ tag: 'distance' }, (device) => {
+      const buffer = new ArrayBuffer(4);
+      value.slice(2, 6).reduce((acc, curr, idx) => {
+        acc[idx] = curr;
+        return acc;
+      }, new Uint8Array(buffer));
+      const distance = new Float32Array(buffer)[0];
+
+      return right({ distance, device });
+    })
+    .with({ tag: 'noDevice' }, () =>
       left(
         new Error(
-          `ble: [sensorValue]: обработка датчика ${device.tag} не реализована`
+          'ble: [sensorValue]: пришло значение датчика, который не добавлен в conn.ports'
         )
       )
-    );
+    )
+    .exhaustive();
 };

@@ -15,7 +15,7 @@ import { profile, UUID } from '../gatt';
 import { addNotificationCallback, subscribe } from '../characteristic';
 import { registerDevice } from '../wedo2/cmds/register';
 import {
-  getDevice,
+  configureDevice,
   isPortPhysical,
   parseAttachedIo,
   wedo2EventAttachedIoType,
@@ -116,7 +116,7 @@ export const setAttachIoListener: SetAttachIoListener = ({ attach, detach }) =>
         } else if (event.right.type === wedo2EventAttachedIoType.ATTACHED) {
           if (!isPortPhysical(event.right.port)) return;
 
-          const device = getDevice(event.right.ioType, event.right.port);
+          const device = configureDevice(event.right.ioType, event.right.port);
           if (isNone(device)) {
             log.error('ble: [attachedIo]: подключено неизвестное устройство');
             return;
@@ -155,10 +155,7 @@ export const setSensorValueListener: SetSensorValueListener = (listener) =>
           return;
         }
 
-        const device = connection.ports[value.right.port];
-        if (isNoDevice(device)) return;
-
-        listener(value.right, device);
+        listener(value.right);
       }
     )
   );
