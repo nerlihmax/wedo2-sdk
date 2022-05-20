@@ -1,8 +1,8 @@
-import { Values } from '../../utils';
-import { Wedo2DistanceSensor } from './distance';
-import { Wedo2Led } from './led';
-import { Wedo2Motor } from './motor';
-import { Wedo2TiltSensor } from './tilt';
+import type { Values } from '@/utils';
+import type { Wedo2DistanceSensor } from './distance';
+import type { Wedo2Led } from './led';
+import type { Wedo2Motor } from './motor';
+import type { Wedo2TiltSensor } from './tilt';
 
 export type Wedo2Device =
   | Wedo2PhysicalDevice

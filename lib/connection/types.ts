@@ -1,12 +1,12 @@
-import noble from '@abandonware/noble';
+import type { Peripheral, Characteristic } from '@abandonware/noble';
 
-import { Wedo2EventAttachedIoDetach } from '../wedo2/events/attachedIo';
-import {
+import type { Wedo2EventAttachedIoDetach } from '@/wedo2/events/attachedIo';
+import type {
   Wedo2NoDevice,
   Wedo2PhysicalDevice,
   Wedo2PhysicalPort,
-} from '../wedo2/devices';
-import { Wedo2EventSensorValue } from '../wedo2/events/sensorValue';
+} from '@/wedo2/devices';
+import type { Wedo2EventSensorValue } from '@/wedo2/events/sensorValue';
 
 // TODO: warp in either
 export type Wedo2Connection =
@@ -16,8 +16,8 @@ export type Wedo2Connection =
 export type Wedo2ConnectionConnected = {
   deviceName: string;
   state: 'connected';
-  peripheral: noble.Peripheral;
-  characteristics: noble.Characteristic[];
+  peripheral: Peripheral;
+  characteristics: Characteristic[];
   ports: Record<Wedo2PhysicalPort, Wedo2PhysicalDevice | Wedo2NoDevice>;
 };
 

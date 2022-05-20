@@ -1,5 +1,5 @@
-import { Values } from '../../utils';
-import { Wedo2BasePhysicalDevice, Wedo2BaseSensor } from './index';
+import type { Values } from '@/utils';
+import type { Wedo2BasePhysicalDevice, Wedo2BaseSensor } from './index';
 
 export type Wedo2TiltSensorMode = Values<typeof wedo2TiltSensorMode>;
 export const wedo2TiltSensorMode = {

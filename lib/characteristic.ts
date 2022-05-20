@@ -1,16 +1,17 @@
 import * as R from 'ramda';
-import noble from '@abandonware/noble';
 import log from 'loglevel';
 
-import { Wedo2ConnectionConnected } from './connection/types';
-import { UUID } from './gatt';
+import type { Characteristic } from '@abandonware/noble';
+
+import type { Wedo2ConnectionConnected } from '@/connection/types';
+import type { UUID } from '@/gatt';
 
 const findByUuid = (uuid: UUID) => R.propEq('uuid', uuid);
 
 const findCharacteristic = (
   connection: Wedo2ConnectionConnected,
   char: UUID
-): noble.Characteristic => {
+): Characteristic => {
   const characteristic = connection.characteristics.find(findByUuid(char));
 
   if (!characteristic) {
