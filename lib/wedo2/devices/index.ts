@@ -1,4 +1,4 @@
-import type { Values } from '../../utils';
+import type { Values } from '@/utils';
 import type { Wedo2DistanceSensor } from './distance';
 import type { Wedo2Led } from './led';
 import type { Wedo2Motor } from './motor';

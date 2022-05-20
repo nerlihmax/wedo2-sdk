@@ -9,9 +9,9 @@ import {
   wedo2IoType,
   wedo2MeasurementUnit,
   wedo2PhysicalPort,
-} from '../devices';
-import { wedo2DistanceSensorMode } from '../devices/distance';
-import { wedo2TiltSensorMode } from '../devices/tilt';
+} from '@/wedo2/devices';
+import { wedo2DistanceSensorMode } from '@/wedo2/devices/distance';
+import { wedo2TiltSensorMode } from '@/wedo2/devices/tilt';
 
 import type {
   Wedo2Device,
@@ -19,7 +19,7 @@ import type {
   Wedo2PhysicalDevice,
   Wedo2PhysicalPort,
   Wedo2Port,
-} from '../devices';
+} from '@/wedo2/devices';
 
 type Wedo2EventAttachedIoType = typeof wedo2EventAttachedIoType;
 export const wedo2EventAttachedIoType = {

@@ -1,4 +1,4 @@
-import type { Values } from '../../utils';
+import type { Values } from '@/utils';
 import type { Wedo2BaseVirtualDevice } from './index';
 
 export type Wedo2LedColor = Values<typeof wedo2LedColor>;

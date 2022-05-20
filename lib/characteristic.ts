@@ -3,8 +3,8 @@ import log from 'loglevel';
 
 import type { Characteristic } from '@abandonware/noble';
 
-import type { Wedo2ConnectionConnected } from './connection/types';
-import type { UUID } from './gatt';
+import type { Wedo2ConnectionConnected } from '@/connection/types';
+import type { UUID } from '@/gatt';
 
 const findByUuid = (uuid: UUID) => R.propEq('uuid', uuid);
 

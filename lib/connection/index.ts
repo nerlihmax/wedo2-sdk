@@ -2,21 +2,22 @@ import * as R from 'ramda';
 import { isLeft } from 'fp-ts/Either';
 import { isNone } from 'fp-ts/Option';
 import noble from '@abandonware/noble';
-import type { Advertisement } from '@abandonware/noble';
 import log from 'loglevel';
 
-import { profile } from '../gatt';
-import { addNotificationCallback, subscribe } from '../characteristic';
-import { registerDevice } from '../wedo2/cmds/register';
+import type { Advertisement } from '@abandonware/noble';
+
+import { profile } from '@/gatt';
+import { addNotificationCallback, subscribe } from '@/characteristic';
+import { registerDevice } from '@/wedo2/cmds/register';
 import {
   getDevice,
   isPortPhysical,
   parseAttachedIo,
   wedo2EventAttachedIoType,
-} from '../wedo2/events/attachedIo';
-import { wedo2Led } from '../wedo2/devices/led';
-import { wedo2PhysicalPort } from '../wedo2/devices';
-import { parseSensorValue } from '../wedo2/events/sensorValue';
+} from '@/wedo2/events/attachedIo';
+import { wedo2Led } from '@/wedo2/devices/led';
+import { wedo2PhysicalPort } from '@/wedo2/devices';
+import { parseSensorValue } from '@/wedo2/events/sensorValue';
 
 import type {
   Connect,
@@ -24,13 +25,13 @@ import type {
   SetSensorValueListener,
   Wedo2ConnectionConnected,
 } from './types';
-import type { UUID } from '../gatt';
+import type { UUID } from '@/gatt';
 import type {
   Wedo2NoDevice,
   Wedo2PhysicalDevice,
   Wedo2PhysicalPort,
-} from '../wedo2/devices';
-import type { Wedo2Motor } from '../wedo2/devices/motor';
+} from '@/wedo2/devices';
+import type { Wedo2Motor } from '@/wedo2/devices/motor';
 
 const isWedo2 = (identity: UUID) => (ad: Advertisement) =>
   ad.serviceUuids && ad.serviceUuids.findIndex(R.equals(identity)) !== -1;

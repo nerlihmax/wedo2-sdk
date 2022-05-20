@@ -1,12 +1,12 @@
 import type { Peripheral, Characteristic } from '@abandonware/noble';
 
-import type { Wedo2EventAttachedIoDetach } from '../wedo2/events/attachedIo';
+import type { Wedo2EventAttachedIoDetach } from '@/wedo2/events/attachedIo';
 import type {
   Wedo2NoDevice,
   Wedo2PhysicalDevice,
   Wedo2PhysicalPort,
-} from '../wedo2/devices';
-import type { Wedo2EventSensorValue } from '../wedo2/events/sensorValue';
+} from '@/wedo2/devices';
+import type { Wedo2EventSensorValue } from '@/wedo2/events/sensorValue';
 
 // TODO: warp in either
 export type Wedo2Connection =

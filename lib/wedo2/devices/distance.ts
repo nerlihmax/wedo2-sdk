@@ -1,4 +1,4 @@
-import type { Values } from '../../utils';
+import type { Values } from '@/utils';
 import type { Wedo2BasePhysicalDevice, Wedo2BaseSensor } from './index';
 
 export type Wedo2DistanceSensorMode = Values<typeof wedo2DistanceSensorMode>;
