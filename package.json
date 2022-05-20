@@ -1,6 +1,6 @@
 {
   "name": "wedo2-sdk",
-  "version": "0.1.0-rc.4",
+  "version": "0.2.0",
   "description": "SDK for Lego WeDo 2.0",
   "main": "dist/wedo2-sdk.cjs.js",
   "module": "dist/wedo2-sdk.es.js",
