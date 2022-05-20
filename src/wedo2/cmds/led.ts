@@ -2,8 +2,10 @@ import log from 'loglevel';
 
 import { profile } from '../../gatt';
 import { write } from '../../characteristic';
-import { Wedo2ConnectionConnected } from '../../connection/types';
-import { wedo2Led, Wedo2LedColor } from '../devices/led';
+import { wedo2Led } from '../devices/led';
+
+import type { Wedo2LedColor } from '../devices/led';
+import type { Wedo2ConnectionConnected } from '../../connection/types';
 
 const ledCmd = 4;
 

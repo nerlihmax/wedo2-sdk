@@ -1,14 +1,17 @@
 import { match } from 'ts-pattern';
-import { Either, right, left, isLeft } from 'fp-ts/lib/Either';
+import { right, left, isLeft } from 'fp-ts/Either';
 
-import { Wedo2ConnectionConnected } from '../../connection/types';
-import {
+import type { Either } from 'fp-ts/Either';
+
+import { wedo2TiltSensorDirection } from '../devices/tilt';
+import { isPortPhysical } from './attachedIo';
+
+import type { Wedo2ConnectionConnected } from '../../connection/types';
+import type { Wedo2DistanceSensor } from '../devices/distance';
+import type {
   Wedo2TiltSensor,
-  wedo2TiltSensorDirection,
   Wedo2TiltSensorDirection,
 } from '../devices/tilt';
-import { isPortPhysical } from './attachedIo';
-import { Wedo2DistanceSensor } from '../devices/distance';
 
 export type Wedo2EventSensorValue =
   | Wedo2TiltSensorValue

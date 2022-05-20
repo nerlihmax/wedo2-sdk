@@ -1,11 +1,12 @@
 import { match } from 'ts-pattern';
 import log from 'loglevel';
 
-import { Wedo2ConnectionConnected } from '../../connection/types';
 import { profile } from '../../gatt';
 import { write } from '../../characteristic';
-import { Wedo2Device, Wedo2NoDevice } from '../devices';
-import { Wedo2Motor } from '../devices/motor';
+
+import type { Wedo2ConnectionConnected } from '../../connection/types';
+import type { Wedo2Device, Wedo2NoDevice } from '../devices';
+import type { Wedo2Motor } from '../devices/motor';
 
 /*
  * from rev-eng guide (in hex):

@@ -2,16 +2,10 @@ import * as R from 'ramda';
 import { isLeft } from 'fp-ts/Either';
 import { isNone } from 'fp-ts/Option';
 import noble from '@abandonware/noble';
+import type { Advertisement } from '@abandonware/noble';
 import log from 'loglevel';
-import { match } from 'ts-pattern';
 
-import {
-  Connect,
-  SetAttachIoListener,
-  SetSensorValueListener,
-  Wedo2ConnectionConnected,
-} from './types';
-import { profile, UUID } from '../gatt';
+import { profile } from '../gatt';
 import { addNotificationCallback, subscribe } from '../characteristic';
 import { registerDevice } from '../wedo2/cmds/register';
 import {
@@ -21,28 +15,30 @@ import {
   wedo2EventAttachedIoType,
 } from '../wedo2/events/attachedIo';
 import { wedo2Led } from '../wedo2/devices/led';
-import {
-  Wedo2Device,
+import { wedo2PhysicalPort } from '../wedo2/devices';
+import { parseSensorValue } from '../wedo2/events/sensorValue';
+
+import type {
+  Connect,
+  SetAttachIoListener,
+  SetSensorValueListener,
+  Wedo2ConnectionConnected,
+} from './types';
+import type { UUID } from '../gatt';
+import type {
   Wedo2NoDevice,
   Wedo2PhysicalDevice,
   Wedo2PhysicalPort,
-  wedo2PhysicalPort,
 } from '../wedo2/devices';
-import { parseSensorValue } from '../wedo2/events/sensorValue';
-import { wedo2TiltSensorDirection } from '../wedo2/devices/tilt';
-import { Wedo2Motor } from 'src/wedo2/devices/motor';
+import type { Wedo2Motor } from '../wedo2/devices/motor';
 
-const isWedo2 = (identity: UUID) => (ad: noble.Advertisement) =>
+const isWedo2 = (identity: UUID) => (ad: Advertisement) =>
   ad.serviceUuids && ad.serviceUuids.findIndex(R.equals(identity)) !== -1;
 
 const getNoDevice = (port: Wedo2PhysicalPort): Wedo2NoDevice => ({
   tag: 'noDevice',
   port,
 });
-
-function isNoDevice(device: Wedo2Device): device is Wedo2NoDevice {
-  return device.tag === 'noDevice';
-}
 
 function isMotor(device: Wedo2PhysicalDevice): device is Wedo2Motor {
   return device.tag === 'motor';

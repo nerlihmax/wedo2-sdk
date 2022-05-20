@@ -2,9 +2,9 @@ import log from 'loglevel';
 
 import { profile } from '../../gatt';
 import { write } from '../../characteristic';
-import { Wedo2ConnectionConnected } from '../../connection/types';
-import { Wedo2Motor } from '../devices/motor';
-import { number } from 'fp-ts';
+
+import type { Wedo2Motor } from '../devices/motor';
+import type { Wedo2ConnectionConnected } from '../../connection/types';
 
 const motorCmd = 1;
 

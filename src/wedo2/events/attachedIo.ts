@@ -1,19 +1,25 @@
-import { Either, right, left } from 'fp-ts/lib/Either';
-import { Option, some, none } from 'fp-ts/Option';
+import { right, left } from 'fp-ts/Either';
+import { some, none } from 'fp-ts/Option';
 import { match } from 'ts-pattern';
 
+import type { Either } from 'fp-ts/Either';
+import type { Option } from 'fp-ts/Option';
+
 import {
-  Wedo2Device,
   wedo2IoType,
-  Wedo2IoType,
   wedo2MeasurementUnit,
-  Wedo2PhysicalDevice,
-  Wedo2PhysicalPort,
   wedo2PhysicalPort,
-  Wedo2Port,
 } from '../devices';
 import { wedo2DistanceSensorMode } from '../devices/distance';
 import { wedo2TiltSensorMode } from '../devices/tilt';
+
+import type {
+  Wedo2Device,
+  Wedo2IoType,
+  Wedo2PhysicalDevice,
+  Wedo2PhysicalPort,
+  Wedo2Port,
+} from '../devices';
 
 type Wedo2EventAttachedIoType = typeof wedo2EventAttachedIoType;
 export const wedo2EventAttachedIoType = {
