@@ -1,0 +1,25 @@
+{
+  "include": ["./lib/**/*.ts"],
+  "compilerOptions": {
+    "target": "ESNext",
+    "lib": ["ESNext"],
+    "allowJs": false,
+    "skipLibCheck": false,
+    "esModuleInterop": false,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "noEmit": true,
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["lib/*"]
+    }
+  },
+  "references": [
+    {
+      "path": "./tsconfig.vite.json"
+    }
+  ]
+}

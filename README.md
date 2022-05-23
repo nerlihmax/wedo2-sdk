@@ -4,11 +4,13 @@
 
 **Important note**: this library is under active development
 
-SDK for Lego WeDo 2.0 with friendly API written in Typescript uses [@abandonware/noble](https://github.com/abandonware/noble/) as BLE backend.
+Mono-repository for SDK for Lego WeDo 2.0 with friendly API written in Typescript supports multiply BLE backends.
 
-## Installation
-
-`npm i wedo2-sdk`
+## Packages
+| Package | npm | sources |
+| - | - | - |
+| wedo2-sdk | [wedo2-sdk](https://npmjs.com/wedo2-sdk/) | [wedo2-sdk](https://github.com/nerlihmax/wedo2-sdk/tree/master/packages/wedo2-sdk/) |   
+| @wedo2-sdk/backend-noble | [@wedo2-sdk/backend-noble](https://npmjs.com/@wedo2-sdk/backend-noble/) | [backend-noble](https://github.com/nerlihmax/wedo2-sdk/tree/master/packages/backend-noble/) |
 
 ## Features
 

@@ -1,0 +1,40 @@
+{
+  "name": "wedo2-sdk",
+  "version": "0.3.0",
+  "description": "SDK for Lego WeDo 2.0",
+  "main": "dist/wedo2-sdk.cjs.js",
+  "module": "dist/wedo2-sdk.es.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/wedo2-sdk.es.js",
+      "require": "./dist/wedo2-sdk.cjs.js"
+    }
+  },
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@wedo2-sdk/shared": "*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nerlihmax/wedo2-sdk.git",
+    "directory": "packages/wedo2-sdk"
+  },
+  "homepage": "https://github.com/nerlihmax/wedo2-sdk/packages/wedo2-sdk#readme",
+  "keywords": [
+    "wedo",
+    "wedo2",
+    "lego"
+  ],
+  "author": "Nerlih Max <nerlihmax@yandex.ru> (https://github.com/nerlihmax)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nerlihmax/wedo2-sdk/issues"
+  }
+}
