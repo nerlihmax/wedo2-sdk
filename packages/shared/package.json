@@ -1,0 +1,19 @@
+{
+  "name": "@wedo2-sdk/shared",
+  "private": true,
+  "main": "dist/shared.cjs.js",
+  "module": "dist/shared.es.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/shared.es.js",
+      "require": "./dist/shared.cjs.js"
+    }
+  },
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "build": "vite build"
+  }
+}

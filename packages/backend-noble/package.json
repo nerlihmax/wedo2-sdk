@@ -1,0 +1,41 @@
+{
+  "name": "@wedo2-sdk/backend-noble",
+  "version": "0.1.0",
+  "main": "dist/backend-noble.cjs.js",
+  "module": "dist/backend-noble.es.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/backend-noble.es.js",
+      "require": "./dist/backend-noble.cjs.js"
+    }
+  },
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@abandonware/noble": "^1.9.2-15",
+    "@wedo2-sdk/shared": "*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nerlihmax/wedo2-sdk.git",
+    "directory": "packages/backend-noble"
+  },
+  "homepage": "https://github.com/nerlihmax/wedo2-sdk/packages/backend-noble#readme",
+  "keywords": [
+    "wedo",
+    "wedo2",
+    "lego",
+    "noble",
+    "wedo2-sdk"
+  ],
+  "author": "Nerlih Max <nerlihmax@yandex.ru> (https://github.com/nerlihmax)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nerlihmax/wedo2-sdk/issues"
+  }
+}
