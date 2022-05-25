@@ -1,6 +1,6 @@
 {
   "name": "@wedo2-sdk/shared",
-  "private": true,
+  "version": "0.3.4",
   "main": "dist/shared.cjs.js",
   "module": "dist/shared.es.js",
   "types": "dist/index.d.ts",
@@ -14,6 +14,7 @@
     "dist/"
   ],
   "scripts": {
-    "build": "vite build"
+    "build": "vite build",
+    "prepublishOnly": "npm run build"
   }
 }
