@@ -2,8 +2,6 @@ import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 import * as path from 'path';
 
-import pkg from './package.json';
-
 export default defineConfig({
   plugins: [
     dts({
@@ -18,7 +16,7 @@ export default defineConfig({
       fileName: (format) => `backend-noble.${format}.js`,
     },
     rollupOptions: {
-      external: [...Object.keys(pkg.dependencies)],
+      external: ['@abandonware/noble'],
     },
     sourcemap: true,
   },
