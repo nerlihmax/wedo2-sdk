@@ -67,7 +67,6 @@ export const registerDevice = async (
   log.debug(`ble: регистрирую девайс ${device.tag} на порту ${device.port}`);
 
   await connection.backend.write(
-    connection,
     profile.services.ioService.characteristics.inputCommand,
     payload
   );

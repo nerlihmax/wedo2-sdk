@@ -23,7 +23,6 @@ export const setMotorState =
     log.debug(`ble: отправляю команду мотору на порте ${motor.port}`);
 
     await connection.backend.write(
-      connection,
       profile.services.ioService.characteristics.outputCommand,
       payload
     );

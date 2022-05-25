@@ -35,7 +35,7 @@ const findCharacteristic = (
 export type Wedo2Noble = Wedo2BleBackend<Peripheral | null>;
 export const wedo2Noble: Wedo2Noble = {
   _conn: null,
-  connect: async () => {
+  async connect() {
     await noble.startScanningAsync();
 
     const peripheral = await new Promise<Peripheral>((resolve) => {
@@ -56,55 +56,50 @@ export const wedo2Noble: Wedo2Noble = {
     const { advertisement } = peripheral;
     const { localName } = advertisement;
 
-    const backend = wedo2Noble;
+    this._conn = peripheral;
 
-    const connection: Wedo2ConnectionConnected<typeof wedo2Noble> = {
+    const connection: Wedo2ConnectionConnected<Wedo2Noble> = {
       state: 'connected',
       deviceName: localName,
-      backend,
+      backend: this,
       ports: {
         [wedo2PhysicalPort.PORT1]: getNoDevice(wedo2PhysicalPort.PORT1),
         [wedo2PhysicalPort.PORT2]: getNoDevice(wedo2PhysicalPort.PORT2),
       },
     };
 
-    connection.backend._conn = peripheral;
-
     return connection;
   },
-  async subscribe(connection, char) {
-    if (connection.backend._conn === null) {
+  async subscribe(char) {
+    if (this._conn === null) {
       log.error('[noble]: conn is null');
     } else {
-      log.debug(`ble: подписался нотификации на ${char.slice(4, 8)}`);
+      log.debug(`[noble]: подписался нотификации на ${char.slice(4, 8)}`);
 
-      findCharacteristic(connection.backend._conn, char).notifyAsync(true);
+      findCharacteristic(this._conn, char).notifyAsync(true);
     }
   },
-  async write(connection, char, payload) {
-    if (connection.backend._conn === null) {
+  async write(char, payload) {
+    if (this._conn === null) {
       log.error('[noble]: conn is null');
     } else {
-      log.debug(`ble: пишу в характеристику ${char.slice(4, 8)}`, payload);
+      log.debug(`[noble]: пишу в характеристику ${char.slice(4, 8)}`, payload);
 
-      findCharacteristic(connection.backend._conn, char).writeAsync(
-        payload,
-        false
-      );
+      findCharacteristic(this._conn, char).writeAsync(payload, false);
     }
   },
-  async addNotificationCallback(connection, char, callback) {
-    if (connection.backend._conn === null) {
+  async addNotificationCallback(char, callback) {
+    if (this._conn === null) {
       log.error('[noble]: conn is null');
     } else {
       log.debug(
-        `ble: ставлю колбек на нотификацию на характеристику ${char.slice(
+        `[noble]: ставлю колбек на нотификацию на характеристику ${char.slice(
           4,
           8
         )}`
       );
 
-      findCharacteristic(connection.backend._conn, char).on('data', callback);
+      findCharacteristic(this._conn, char).on('data', callback);
     }
   },
 };
