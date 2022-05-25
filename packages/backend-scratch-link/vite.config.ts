@@ -2,6 +2,8 @@ import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 import * as path from 'path';
 
+import pkg from './package.json';
+
 export default defineConfig({
   plugins: [
     dts({
@@ -13,10 +15,10 @@ export default defineConfig({
     lib: {
       entry: path.resolve(__dirname, 'lib/index.ts'),
       formats: ['cjs', 'es'],
-      fileName: (format) => `backend-noble.${format}.js`,
+      fileName: (format) => `backend-scratch-link.${format}.js`,
     },
     rollupOptions: {
-      external: ['@abandonware/noble'],
+      external: [...Object.keys(pkg.dependencies)],
     },
     sourcemap: true,
   },

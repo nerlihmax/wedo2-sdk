@@ -31,13 +31,11 @@ export const connect = async (
   const connection = await backend.connect();
 
   await connection.backend.subscribe(
-    connection,
     profile.services.commonService.characteristics.attachedIo
   );
 
   await connection.backend.subscribe(
-    connection,
-    profile.services.commonService.characteristics.attachedIo
+    profile.services.ioService.characteristics.sensorValue
   );
 
   await registerDevice(connection, wedo2Led);
@@ -54,7 +52,6 @@ export const setAttachIoListener = ({
 }) =>
   R.tap((connection: Wedo2ConnectionConnected<Wedo2BleBackend<unknown>>) =>
     connection.backend.addNotificationCallback(
-      connection,
       profile.services.commonService.characteristics.attachedIo,
       async (data) => {
         log.debug('ble: [attachedIo]: ', data);
@@ -106,12 +103,11 @@ export const setAttachIoListener = ({
     )
   );
 
-export const setSensorValueListener = async (
+export const setSensorValueListener = (
   listener: (value: Wedo2EventSensorValue) => void
 ) =>
   R.tap((connection: Wedo2ConnectionConnected<Wedo2BleBackend<unknown>>) =>
     connection.backend.addNotificationCallback(
-      connection,
       profile.services.ioService.characteristics.sensorValue,
       async (data) => {
         log.debug('ble: [sensorValue]: ', connection.ports);

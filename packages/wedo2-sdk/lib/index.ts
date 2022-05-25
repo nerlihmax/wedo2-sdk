@@ -10,6 +10,7 @@ import {
   wedo2LedColor,
   wedo2TiltSensorDirection,
 } from '@wedo2-sdk/shared';
+import log from 'loglevel';
 
 export {
   connect,
@@ -27,5 +28,9 @@ import type {
   Wedo2PhysicalPort,
   Wedo2TiltSensorDirection,
 } from '@wedo2-sdk/shared';
+
+log.setDefaultLevel(
+  (process.env.NODE_ENV ?? 'production') === 'production' ? 'silent' : 'debug'
+);
 
 export type { Wedo2LedColor, Wedo2PhysicalPort, Wedo2TiltSensorDirection };

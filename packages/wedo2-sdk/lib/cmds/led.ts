@@ -23,7 +23,6 @@ export const setLedColor =
     log.debug('ble: ставлю цвет светодиоду');
 
     await connection.backend.write(
-      connection,
       profile.services.ioService.characteristics.outputCommand,
       payload
     );
