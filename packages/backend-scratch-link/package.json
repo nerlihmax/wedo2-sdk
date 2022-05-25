@@ -1,0 +1,45 @@
+{
+  "name": "@wedo2-sdk/backend-scratch-link",
+  "version": "0.1.4",
+  "main": "dist/backend-scratch-link.cjs.js",
+  "module": "dist/backend-scratch-link.es.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/backend-scratch-link.es.js",
+      "require": "./dist/backend-scratch-link.cjs.js"
+    }
+  },
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@wedo2-sdk/shared": "*",
+    "ws": "^8.6.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nerlihmax/wedo2-sdk.git",
+    "directory": "packages/backend-scratch-link"
+  },
+  "homepage": "https://github.com/nerlihmax/wedo2-sdk/packages/backend-scratch-link#readme",
+  "keywords": [
+    "wedo",
+    "wedo2",
+    "lego",
+    "scratch-link",
+    "wedo2-sdk"
+  ],
+  "author": "Nerlih Max <nerlihmax@yandex.ru> (https://github.com/nerlihmax)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nerlihmax/wedo2-sdk/issues"
+  },
+  "devDependencies": {
+    "@types/ws": "^8.5.3"
+  }
+}
