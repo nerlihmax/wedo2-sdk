@@ -1,4 +1,5 @@
-import log from 'loglevel';
+import { getLogger } from 'loglevel';
+const log = getLogger('wedo2-sdk');
 import { profile, wedo2Led } from '@wedo2-sdk/shared';
 
 import type {
@@ -16,8 +17,8 @@ const ledCmd = 4;
 export const setLedColor =
   (color: Wedo2LedColor) =>
   async (
-    connection: Wedo2ConnectionConnected<Wedo2BleBackend<unknown>>
-  ): Promise<Wedo2ConnectionConnected<Wedo2BleBackend<unknown>>> => {
+    connection: Wedo2ConnectionConnected<Wedo2BleBackend>
+  ): Promise<Wedo2ConnectionConnected<Wedo2BleBackend>> => {
     const payload = Buffer.from([wedo2Led.port, ledCmd, 1, color]);
 
     log.debug('ble: ставлю цвет светодиоду');

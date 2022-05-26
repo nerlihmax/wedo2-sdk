@@ -10,7 +10,8 @@ import {
   wedo2LedColor,
   wedo2TiltSensorDirection,
 } from '@wedo2-sdk/shared';
-import log from 'loglevel';
+import { getLogger } from 'loglevel';
+const log = getLogger('wedo2-sdk');
 
 export {
   connect,
@@ -29,8 +30,11 @@ import type {
   Wedo2TiltSensorDirection,
 } from '@wedo2-sdk/shared';
 
-log.setDefaultLevel(
-  (process.env.NODE_ENV ?? 'production') === 'production' ? 'silent' : 'debug'
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const process = require('node:process');
+log.setLevel(
+  (process.env?.NODE_ENV ?? 'production') === 'production' ? 'silent' : 'debug'
 );
+log.debug('[wedo2-sdk]: библиотека запущена в debug-режиме');
 
 export type { Wedo2LedColor, Wedo2PhysicalPort, Wedo2TiltSensorDirection };

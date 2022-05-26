@@ -1,5 +1,6 @@
 import * as R from 'ramda';
-import log from 'loglevel';
+import { getLogger } from 'loglevel';
+const log = getLogger('wedo2-sdk');
 import { isLeft } from 'fp-ts/lib/Either';
 import { isNone } from 'fp-ts/lib/Option';
 import {
@@ -8,6 +9,7 @@ import {
   profile,
   wedo2EventAttachedIoType,
   wedo2Led,
+  wedo2PhysicalPort,
 } from '@wedo2-sdk/shared';
 import { parseSensorValue } from '@/events/sensorValue';
 import { registerDevice } from '@/cmds/register';
@@ -25,10 +27,20 @@ import type {
   Wedo2PhysicalDevice,
 } from '@wedo2-sdk/shared';
 
-export const connect = async (
-  backend: Wedo2BleBackend<unknown>
-): Promise<Wedo2ConnectionConnected<Wedo2BleBackend<unknown>>> => {
-  const connection = await backend.connect();
+export const connect = async <T extends Wedo2BleBackend>(
+  backend: T
+): Promise<Wedo2ConnectionConnected<T>> => {
+  await backend.connect();
+
+  const connection: Wedo2ConnectionConnected<T> = {
+    state: 'connected',
+    deviceName: backend.deviceName,
+    backend,
+    ports: {
+      [wedo2PhysicalPort.PORT1]: getNoDevice(wedo2PhysicalPort.PORT1),
+      [wedo2PhysicalPort.PORT2]: getNoDevice(wedo2PhysicalPort.PORT2),
+    },
+  };
 
   await connection.backend.subscribe(
     profile.services.commonService.characteristics.attachedIo
@@ -50,7 +62,7 @@ export const setAttachIoListener = ({
   attach: (device: Wedo2PhysicalDevice) => void;
   detach: (device: Wedo2EventAttachedIoDetach) => void;
 }) =>
-  R.tap((connection: Wedo2ConnectionConnected<Wedo2BleBackend<unknown>>) =>
+  R.tap((connection: Wedo2ConnectionConnected<Wedo2BleBackend>) =>
     connection.backend.addNotificationCallback(
       profile.services.commonService.characteristics.attachedIo,
       async (data) => {
@@ -106,7 +118,7 @@ export const setAttachIoListener = ({
 export const setSensorValueListener = (
   listener: (value: Wedo2EventSensorValue) => void
 ) =>
-  R.tap((connection: Wedo2ConnectionConnected<Wedo2BleBackend<unknown>>) =>
+  R.tap((connection: Wedo2ConnectionConnected<Wedo2BleBackend>) =>
     connection.backend.addNotificationCallback(
       profile.services.ioService.characteristics.sensorValue,
       async (data) => {
