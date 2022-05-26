@@ -1,6 +1,6 @@
 {
   "name": "@wedo2-sdk/backend-noble",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "main": "dist/backend-noble.cjs.js",
   "module": "dist/backend-noble.es.js",
   "types": "dist/index.d.ts",

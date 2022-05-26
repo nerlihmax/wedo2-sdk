@@ -1,6 +1,6 @@
 {
   "name": "@wedo2-sdk/backend-scratch-link",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "main": "dist/backend-scratch-link.cjs.js",
   "module": "dist/backend-scratch-link.es.js",
   "types": "dist/index.d.ts",

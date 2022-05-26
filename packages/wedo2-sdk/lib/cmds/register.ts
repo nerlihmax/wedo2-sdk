@@ -1,5 +1,6 @@
 import { match } from 'ts-pattern';
-import log from 'loglevel';
+import { getLogger } from 'loglevel';
+const log = getLogger('wedo2-sdk');
 import { profile } from '@wedo2-sdk/shared';
 
 import type {
@@ -16,7 +17,7 @@ import type {
  * (COMMAND ID, COMMAND TYPE, CONNECT ID, TYPE ID, MODE, DELTA INTERVAL (4 BYTES), UNIT, NOTIFICATIONS ENABLED).
  */
 export const registerDevice = async (
-  connection: Wedo2ConnectionConnected<Wedo2BleBackend<unknown>>,
+  connection: Wedo2ConnectionConnected<Wedo2BleBackend>,
   device: Exclude<Wedo2Device, Wedo2NoDevice | Wedo2Motor>
 ): Promise<void> => {
   const payload = Buffer.from(

@@ -1,41 +1,24 @@
-import * as R from 'ramda';
-import noble, { Characteristic, Peripheral } from '@abandonware/noble';
-import log from 'loglevel';
-import { profile, wedo2PhysicalPort, getNoDevice } from '@wedo2-sdk/shared';
+import noble from '@abandonware/noble';
+import { getLogger } from 'loglevel';
+const log = getLogger('wedo2-sdk');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const process = require('node:process');
+log.setLevel(
+  (process.env?.NODE_ENV ?? 'production') === 'production' ? 'silent' : 'debug'
+);
+import { profile } from '@wedo2-sdk/shared';
+import { isWedo2, findCharacteristic } from '@/utlis';
 
-import type { Advertisement } from '@abandonware/noble';
-import type {
-  Wedo2BleBackend,
-  UUID,
-  Wedo2ConnectionConnected,
-} from '@wedo2-sdk/shared';
+import type { Peripheral } from '@abandonware/noble';
+import type { Wedo2BleBackend } from '@wedo2-sdk/shared';
 
-const isWedo2 = (identity: UUID) => (ad: Advertisement) =>
-  ad.serviceUuids && ad.serviceUuids.findIndex(R.equals(identity)) !== -1;
+export class Wedo2Noble implements Wedo2BleBackend {
+  public deviceName = '';
+  private conn?: Peripheral;
 
-const findByUuid = (uuid: UUID) => R.propEq('uuid', uuid);
-
-const findCharacteristic = (
-  peripheral: Peripheral,
-  char: UUID
-): Characteristic => {
-  const service = peripheral.services.find((service) =>
-    service.characteristics.find(findByUuid(char))
-  );
-
-  const characteristic = service?.characteristics.find(findByUuid(char));
-
-  if (!characteristic) {
-    throw new Error(`куда-то пропала gatt-характеристика ${char}`);
-  }
-
-  return characteristic;
-};
-
-export type Wedo2Noble = Wedo2BleBackend<Peripheral | null>;
-export const wedo2Noble: Wedo2Noble = {
-  _conn: null,
   async connect() {
+    log.debug('[noble]: запущен бекенд noble');
+
     await noble.startScanningAsync();
 
     const peripheral = await new Promise<Peripheral>((resolve) => {
@@ -53,44 +36,32 @@ export const wedo2Noble: Wedo2Noble = {
       });
     });
 
-    const { advertisement } = peripheral;
-    const { localName } = advertisement;
+    this.deviceName = peripheral.advertisement.localName;
 
-    this._conn = peripheral;
+    this.conn = peripheral;
+  }
 
-    const connection: Wedo2ConnectionConnected<Wedo2Noble> = {
-      state: 'connected',
-      deviceName: localName,
-      backend: this,
-      ports: {
-        [wedo2PhysicalPort.PORT1]: getNoDevice(wedo2PhysicalPort.PORT1),
-        [wedo2PhysicalPort.PORT2]: getNoDevice(wedo2PhysicalPort.PORT2),
-      },
-    };
-
-    return connection;
-  },
-  async subscribe(char) {
-    if (this._conn === null) {
-      log.error('[noble]: conn is null');
+  async subscribe(char: string) {
+    if (!this.conn) {
+      log.error('[noble]: подключение к устройству пропало');
     } else {
       log.debug(`[noble]: подписался нотификации на ${char.slice(4, 8)}`);
 
-      findCharacteristic(this._conn, char).notifyAsync(true);
+      findCharacteristic(this.conn, char).notifyAsync(true);
     }
-  },
-  async write(char, payload) {
-    if (this._conn === null) {
-      log.error('[noble]: conn is null');
+  }
+  async write(char: string, payload: Buffer) {
+    if (!this.conn) {
+      log.error('[noble]: подключение к устройству пропало');
     } else {
       log.debug(`[noble]: пишу в характеристику ${char.slice(4, 8)}`, payload);
 
-      findCharacteristic(this._conn, char).writeAsync(payload, false);
+      findCharacteristic(this.conn, char).writeAsync(payload, false);
     }
-  },
-  async addNotificationCallback(char, callback) {
-    if (this._conn === null) {
-      log.error('[noble]: conn is null');
+  }
+  addNotificationCallback(char: string, callback: (data: Buffer) => void) {
+    if (!this.conn) {
+      log.error('[noble]: подключение к устройству пропало');
     } else {
       log.debug(
         `[noble]: ставлю колбек на нотификацию на характеристику ${char.slice(
@@ -99,7 +70,13 @@ export const wedo2Noble: Wedo2Noble = {
         )}`
       );
 
-      findCharacteristic(this._conn, char).on('data', callback);
+      findCharacteristic(this.conn, char).on('data', callback);
     }
-  },
-};
+  }
+  async disconnect() {
+    throw new Error('Method not implemented.');
+  }
+  onDisconnect(callback: () => void) {
+    throw new Error('Method not implemented.');
+  }
+}

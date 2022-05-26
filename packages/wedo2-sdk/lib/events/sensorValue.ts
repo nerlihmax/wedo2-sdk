@@ -26,7 +26,7 @@ const matchTiltDirection = (
 
 export const parseSensorValue = (
   data: Buffer,
-  ports: Wedo2ConnectionConnected<Wedo2BleBackend<unknown>>['ports']
+  ports: Wedo2ConnectionConnected<Wedo2BleBackend>['ports']
 ): Either<Error, Wedo2EventSensorValue> => {
   const value = [...data];
 
