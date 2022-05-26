@@ -8,6 +8,9 @@ export default defineConfig({
       insertTypesEntry: true,
     }),
   ],
+  define: {
+    'process.env.NODE_ENV': 'process.env.NODE_ENV',
+  },
   build: {
     outDir: path.resolve(__dirname, 'dist'),
     lib: {
